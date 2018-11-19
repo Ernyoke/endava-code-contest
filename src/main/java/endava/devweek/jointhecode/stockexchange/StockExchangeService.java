@@ -40,6 +40,7 @@ public class StockExchangeService {
 
     private List<File> unpackZip(MultipartFile multipartFile) {
         final String destinationPath = System.getProperty("java.io.tmpdir");
+        logger.trace("Temporary directory: " + destinationPath);
         long timeStampMillis = Instant.now().toEpochMilli();
         Path path = Paths.get(destinationPath + "zip_" + timeStampMillis + "/");
         File destinationDir = new File(path.toUri());
