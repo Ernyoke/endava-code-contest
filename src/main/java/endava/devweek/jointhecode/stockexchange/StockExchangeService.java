@@ -71,9 +71,8 @@ public class StockExchangeService {
         } else {
             logger.error("Could not make temporary directory!");
         }
-    }
         return files;
-}
+    }
 
     private String decodeQRCode(File file) throws IOException, NotFoundException {
         BufferedImage bufferedImage = ImageIO.read(new FileInputStream(file));
