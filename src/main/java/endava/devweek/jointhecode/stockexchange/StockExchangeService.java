@@ -92,6 +92,7 @@ public class StockExchangeService {
                 files.forEach(file -> {
                     try {
                         String decodedString = decodeQRCode(file);
+                        logger.info("Decoded: " + file.getName());
                         responseMap.put(file, GainOptimizer.optimize(decodedString));
                     } catch (NotFoundException e) {
                         logger.info("Invalid QR code: " + file.getName());
@@ -107,6 +108,7 @@ public class StockExchangeService {
         } else {
             logger.info("There was no file uploaded!");
         }
+        logger.info("Building JSON output...");
         return ResponseBuilder.build(responseMap);
     }
 }
