@@ -17,10 +17,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -86,7 +83,7 @@ public class StockExchangeService {
     }
 
     public String getResult(MultipartFile multipartFile) {
-        Map<File, PriceGain> responseMap = new HashMap<>();
+        Map<File, PriceGain> responseMap = new TreeMap<>();
 
         if (multipartFile != null) {
             String fileName = multipartFile.getOriginalFilename();
