@@ -39,41 +39,41 @@ public class StockExchangeService {
     }
 
     private List<File> unpackZip(MultipartFile multipartFile) {
-        final String destinationPath = System.getProperty("java.io.tmpdir");
+        String destinationPath = System.getProperty("java.io.tmpdir");
+        if (!destinationPath.endsWith("/")) {
+            destinationPath += "/";
+        }
         logger.info("Temporary directory: " + destinationPath);
         long timeStampMillis = Instant.now().toEpochMilli();
         Path path = Paths.get(destinationPath + "zip_" + timeStampMillis + "/");
         File destinationDir = new File(path.toUri());
         List<File> files = new ArrayList<>();
-        try {
-            if (destinationDir.mkdirs()) {
-                try {
-                    ZipInputStream zipInputStream = new ZipInputStream(multipartFile.getInputStream());
-                    ZipEntry zipEntry = zipInputStream.getNextEntry();
-                    byte[] buffer = new byte[1024];
-                    // Only handle .png files, ignore other type of files.
-                    while (zipEntry != null && zipEntry.getName().toLowerCase().endsWith(".png")) {
-                        File file = newFile(destinationDir, zipEntry);
-                        files.add(file);
-                        FileOutputStream fileOutputStream = new FileOutputStream(file);
-                        int len;
-                        while ((len = zipInputStream.read(buffer)) > 0) {
-                            fileOutputStream.write(buffer, 0, len);
-                        }
-                        fileOutputStream.close();
-                        zipEntry = zipInputStream.getNextEntry();
+        if (destinationDir.mkdirs()) {
+            try {
+                ZipInputStream zipInputStream = new ZipInputStream(multipartFile.getInputStream());
+                ZipEntry zipEntry = zipInputStream.getNextEntry();
+                byte[] buffer = new byte[1024];
+                // Only handle .png files, ignore other type of files.
+                while (zipEntry != null && zipEntry.getName().toLowerCase().endsWith(".png")) {
+                    File file = newFile(destinationDir, zipEntry);
+                    files.add(file);
+                    FileOutputStream fileOutputStream = new FileOutputStream(file);
+                    int len;
+                    while ((len = zipInputStream.read(buffer)) > 0) {
+                        fileOutputStream.write(buffer, 0, len);
                     }
-                } catch (IOException e) {
-                    e.printStackTrace();
+                    fileOutputStream.close();
+                    zipEntry = zipInputStream.getNextEntry();
                 }
-            } else {
-                logger.error("Could not make temporary directory!");
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } catch (SecurityException e) {
-            e.printStackTrace();
+        } else {
+            logger.error("Could not make temporary directory!");
         }
-        return files;
     }
+        return files;
+}
 
     private String decodeQRCode(File file) throws IOException, NotFoundException {
         BufferedImage bufferedImage = ImageIO.read(new FileInputStream(file));
