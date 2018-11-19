@@ -45,26 +45,32 @@ public class StockExchangeService {
         Path path = Paths.get(destinationPath + "zip_" + timeStampMillis + "/");
         File destinationDir = new File(path.toUri());
         List<File> files = new ArrayList<>();
-        if (destinationDir.mkdirs()) {
-            try {
-                ZipInputStream zipInputStream = new ZipInputStream(multipartFile.getInputStream());
-                ZipEntry zipEntry = zipInputStream.getNextEntry();
-                byte[] buffer = new byte[1024];
-                // Only handle .png files, ignore other type of files.
-                while (zipEntry != null && zipEntry.getName().toLowerCase().endsWith(".png")) {
-                    File file = newFile(destinationDir, zipEntry);
-                    files.add(file);
-                    FileOutputStream fileOutputStream = new FileOutputStream(file);
-                    int len;
-                    while ((len = zipInputStream.read(buffer)) > 0) {
-                        fileOutputStream.write(buffer, 0, len);
+        try {
+            if (destinationDir.mkdirs()) {
+                try {
+                    ZipInputStream zipInputStream = new ZipInputStream(multipartFile.getInputStream());
+                    ZipEntry zipEntry = zipInputStream.getNextEntry();
+                    byte[] buffer = new byte[1024];
+                    // Only handle .png files, ignore other type of files.
+                    while (zipEntry != null && zipEntry.getName().toLowerCase().endsWith(".png")) {
+                        File file = newFile(destinationDir, zipEntry);
+                        files.add(file);
+                        FileOutputStream fileOutputStream = new FileOutputStream(file);
+                        int len;
+                        while ((len = zipInputStream.read(buffer)) > 0) {
+                            fileOutputStream.write(buffer, 0, len);
+                        }
+                        fileOutputStream.close();
+                        zipEntry = zipInputStream.getNextEntry();
                     }
-                    fileOutputStream.close();
-                    zipEntry = zipInputStream.getNextEntry();
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
+            } else {
+                logger.error("Could not make temporary directory!");
             }
+        } catch (SecurityException e) {
+            e.printStackTrace();
         }
         return files;
     }
