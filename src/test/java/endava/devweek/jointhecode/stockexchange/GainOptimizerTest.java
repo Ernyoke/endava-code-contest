@@ -34,6 +34,26 @@ public class GainOptimizerTest {
     }
 
     @Test
+    public void shouldSucceedWithSmallMinEnd() throws InvalidInputException {
+        String input = "19.35 19.30 18.88 18.93 18.95 19.03 19.00 18.97 18.97 9.98";
+        PriceGain expected = new PriceGain(18.88f, 19.03f);
+
+        PriceGain actualResult = GainOptimizer.optimize(input);
+
+        Assertions.assertEquals(expected, actualResult);
+    }
+
+    @Test
+    public void shouldSucceedWithSmallMaxEnd() throws InvalidInputException {
+        String input = "19.35 19.30 18.88 18.93 18.95 19.03 19.00 18.97 18.97 20.98";
+        PriceGain expected = new PriceGain(18.88f, 20.98f);
+
+        PriceGain actualResult = GainOptimizer.optimize(input);
+
+        Assertions.assertEquals(expected, actualResult);
+    }
+
+    @Test
     public void shouldSucceedWith3Values() throws InvalidInputException {
         String input = "10.30 5.20 5.00";
         PriceGain expected = new PriceGain(10.3f, 5.f);
