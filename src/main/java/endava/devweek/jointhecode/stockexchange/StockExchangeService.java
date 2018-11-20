@@ -83,7 +83,24 @@ public class StockExchangeService {
     }
 
     public String getResult(MultipartFile multipartFile) {
-        Map<File, PriceGain> responseMap = new TreeMap<>();
+        Map<File, PriceGain> responseMap = new TreeMap<>((file1, file2) -> {
+            String name1 = file1.getName().substring(0, file1.getName().lastIndexOf("."));
+            String name2 = file2.getName().substring(0, file2.getName().lastIndexOf("."));
+            int lastIndexOfDash1 = name1.lastIndexOf("-");
+            String strPart1 = name1.substring(0, lastIndexOfDash1);
+            int lastIndexOfDash2 = name1.lastIndexOf("-");
+            String strPart2 = name2.substring(0, lastIndexOfDash2);
+            if (strPart1.equals(strPart2)) {
+                try {
+                    int number1 = Integer.parseInt(name1.substring(lastIndexOfDash1 + 1));
+                    int number2 = Integer.parseInt(name2.substring(lastIndexOfDash2 + 1));
+                    return number1 - number2;
+                } catch (NumberFormatException e) {
+                    return name1.compareToIgnoreCase(name2);
+                }
+            }
+            return name1.compareToIgnoreCase(name2);
+        });
 
         if (multipartFile != null) {
             String fileName = multipartFile.getOriginalFilename();
