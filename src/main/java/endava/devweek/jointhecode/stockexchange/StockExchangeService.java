@@ -18,6 +18,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Instant;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -83,7 +84,7 @@ public class StockExchangeService {
     }
 
     public String getResult(MultipartFile multipartFile) {
-        Map<File, PriceGain> responseMap = new HashMap<>();
+        Map<File, PriceGain> responseMap = new ConcurrentHashMap<>();
 
         if (multipartFile != null) {
             String fileName = multipartFile.getOriginalFilename();
