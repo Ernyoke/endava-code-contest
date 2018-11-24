@@ -1,4 +1,4 @@
-# Join the code - Endava DEV Week challenge
+# Endava DEV Week challenge 2018
 
 ## Build
 ```
